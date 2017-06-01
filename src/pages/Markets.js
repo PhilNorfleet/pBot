@@ -76,7 +76,10 @@ class Markets extends Component {
 
   onRowClick = (row) => {
     this.setState({selected: row})
-    this.loadPeriods(row.pair, this.state.period, this.state.start, this.state.end)
+    let { period, start, end } = this.state;
+    clearInterval(this.periodsInterval);
+    this.loadPeriods(row.pair, period, start, end)
+    this.periodsInterval = setInterval(()=>{this.loadPeriods(row.pair, period, start, end)}, 6500)
   }
   render = () => {
     let styles = this.getStyle();
