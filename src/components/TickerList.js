@@ -71,6 +71,7 @@ class TickerList extends Component {
     tickers.forEach((ticker)=>{
       let mock = {};
       mock.name = ticker.name
+      mock.pair = ticker.pair
       mock.last = ticker.last
       mock.baseVolume = Math.floor(parseFloat(ticker.baseVolume)*100)/100
       mock.percentChange = Math.floor(parseFloat(ticker.percentChange)*10000)/100
@@ -150,6 +151,7 @@ class TickerList extends Component {
       for (var compare_key in tickers) {
         if(compare_key.split('_')[0] === key) {
           rel_tickers.push(tickers[compare_key])
+          rel_tickers[rel_tickers.length - 1].pair = compare_key
           rel_tickers[rel_tickers.length - 1].name = compare_key.split('_')[1]
         }
       }
@@ -170,7 +172,7 @@ class TickerList extends Component {
   render = () => {
     let styles = this.getStyle();
     return (
-      <Col
+      <Col md={4} lg={2} sm={6} xs={12}
         style={ styles.col }>
         {this.tabs(this.props.tickers)}
       </Col>

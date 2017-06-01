@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
-import {Grid} from "react-bootstrap";
+import {Grid, Col} from "react-bootstrap";
 import axios from 'axios';
-import TickerList from '../components/TickerList'
-import ChartContainer from '../components/chart/ChartContainer'
+import { ChartCanvas, Chart, series } from "react-stockcharts";
+import { scale, coordinates, tooltip } from "react-stockcharts";
+import { axes, indicator, helper } from "react-stockcharts";
+import { scaleTime } from "d3-scale";
 import 'moment/locale/nb';
-
-class Markets extends Component {
+let { CandlestickSeries } = series;
+let { XAxis, YAxis } = axes;
+let { fitWidth } = helper;
+class ChartContainer extends Component {
 
   constructor(props){
     super(props);
@@ -19,36 +23,52 @@ class Markets extends Component {
     }
   }
   componentDidMount = () => {
-    this.loadCurrencies();
-    this.loadTickers();
-    this.interval = setInterval(()=>{this.loadTickers()}, 6500)
+
   }
   componentWillUnmount = () => {
-    clearInterval(this.interval);
+
   }
-  loadCurrencies = () => {
-    axios.get('http://localhost:3001/api/currencies').then(res => {
-      this.setState({currencies: res.data})
-    })
-  }
-  loadTickers = () => {
-    axios.get('http://localhost:3001/api/tickers').then(res => {
-      this.setState({tickers: res.data})
-    })
-  }
-  onRowClick = (row) => {
-    this.setState({selected: row})
-  }
+
+
   render = () => {
     let styles = this.getStyle();
-    console.log(this.state.selected)
+
+    // let { type, width, data, ratio } = this.props;
+    let type = 'svg'
+    let width = 500
+    let periods = this.props.periods;
+    if (periods) {
+      periods.forEach((d, i) => {
+        d.date = new Date(periods[i].date);
+        d.open = +d.open;
+        d.high = +d.high;
+        d.low = +d.low;
+        d.close = +d.close;
+        d.volume = +d.volume;
+        //console.log(d);
+      })
+      return (
+        <Col md={4} lg={8} sm={6} xs={12}>
+          <ChartCanvas ratio={1} width={width} height={500}
+              margin={{ left: 50, right: 50, top: 10, bottom: 30 }} type={type}
+              seriesName={ this.props.pair }
+              data={ periods }
+              xAccessor={d => d.date} xScale={scaleTime()}>
+
+            <Chart id={1} yExtents={d => [d.high + (d.low * 0.02), d.low-(d.low * 0.02)]}>
+              <XAxis axisAt="bottom" orient="bottom" ticks={6}/>
+              <YAxis axisAt="left" orient="left" ticks={5} />
+              <CandlestickSeries />
+            </Chart>
+          </ChartCanvas>
+        </Col>
+      )
+    }
+
     return (
-      <Grid >
-        <TickerList tickers={this.state.tickers} onRowClick={this.onRowClick}/>
-        <Chart/>
-      </Grid>
-    );
+      <div>Loading</div>
+    )
   }
 }
 
-export default Markets;
+export default ChartContainer;
