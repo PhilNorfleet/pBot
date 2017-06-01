@@ -3,13 +3,14 @@
 //first we import our dependencies…
 var express = require('express');
 var mongoose = require('mongoose');
+var compression = require('compression');
 var bodyParser = require('body-parser');
 const Poloniex = require('poloniex-api-node');
-//and create our instances
+//create instances
 var app = express();
+// gzip compression
+app.use(compression());
 var router = express.Router();
-//set our port to either a predetermined port number if you have set
-//it up, or 3001
 
 let poloniex = new Poloniex(process.env.POLONIEX_PUBLIC_KEY, process.env.POLONIEX_SECRET_KEY, { socketTimeout: 15000 });
 var port = process.env.API_PORT || 3001;
