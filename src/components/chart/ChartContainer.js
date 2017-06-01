@@ -36,7 +36,6 @@ class Markets extends Component {
       this.setState({tickers: res.data})
     })
   }
-
   onRowClick = (row) => {
     this.setState({selected: row})
   }
@@ -46,7 +45,7 @@ class Markets extends Component {
     return (
       <Grid >
         <TickerList tickers={this.state.tickers} onRowClick={this.onRowClick}/>
-        <ChartContainer/>
+        <Chart/>
       </Grid>
     );
   }

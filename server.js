@@ -51,6 +51,12 @@ router.route('/tickers').get((req,res) => {
   })
 })
 
+router.route('/api/chart/:pair/:period/:start/:end').get((req,res) => {
+    poloniex.returnChartData(req.params.pair, req.params.period, req.params.start, req.query.end, function (err, data) {
+        res.json(data);
+    });
+})
+
 //Use our router configuration when we call /api
 app.use('/api', router);
 

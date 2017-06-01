@@ -5,14 +5,16 @@
   "dependencies": {
     "axios": "^0.16.1",
     "body-parser": "^1.17.2",
-    "bootstrap": "^3.3.7",
+    "bootstrap": "^4.0.0-alpha.6",
     "express": "^4.15.3",
     "foreman": "^2.0.0",
     "marked": "^0.3.6",
     "mongoose": "^4.10.4",
     "nodemon": "^1.11.0",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-bootstrap-table": "^3.3.7",
+    "react-dom": "^15.5.4",
+    "react-stockcharts": "^0.6.1"
   },
   "devDependencies": {
     "css-loader": "^0.28.4",
