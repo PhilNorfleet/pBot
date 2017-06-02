@@ -67,10 +67,16 @@ router.route('/currencies').get((req, res) => {
 });
 
 router.route('/tickers').get((req, res) => {
-  poloniex.returnTicker((err, data) => {
-    res.json(data)
+  cryptowatch.summaries().then((response) => {
+    res.json(response)
   })
 })
+
+// router.route('/tickers').get((req, res) => {
+//   poloniex.returnTicker((err, data) => {
+//     res.json(data)
+//   })
+// })
 
 // router.route('/markets').get((req, res) => {
 
@@ -81,6 +87,8 @@ router.route('/chart/:pair/:period/:start/:end').get((req,res) => {
         res.json(data);
     });
 })
+
+
 
 //Use our router configuration when we call /api
 app.use('/api', router);

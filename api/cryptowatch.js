@@ -26,33 +26,32 @@ class Cryptowatch {
 
   // https://cryptowat.ch/docs/api
   markets (exchange) {
-    console.log(exchange)
     return exchange ? getResult(`${this.url}/markets/${exchange}`) : getResult(`${this.url}/markets`)
   }
 
   // https://cryptowat.ch/docs/api#price
-  price (coin, currency = 'usd', market = 'coinbase') {
-    return getResult(`${this.url}/markets/${market}/${coin}${currency}/price`, this.options)
+  price (coin, currency = 'usd', exchange = 'poloniex') {
+    return getResult(`${this.url}/markets/${exchange}/${coin}${currency}/price`, this.options)
   }
 
   // https://cryptowat.ch/docs/api#summary
-  summary (coin, currency = 'usd', market = 'coinbase') {
-    return getResult(`${this.url}/markets/${market}/${coin}${currency}/summary`, this.options)
+  summary (coin, currency = 'usd', exchange = 'poloniex') {
+    return getResult(`${this.url}/markets/${exchange}/${coin}${currency}/summary`, this.options)
   }
 
   // https://cryptowat.ch/docs/api#trades
-  trades (coin, currency = 'usd', market = 'coinbase') {
-    return getResult(`${this.url}/markets/${market}/${coin}${currency}/trades`, this.options)
+  trades (coin, currency = 'usd', exchange = 'poloniex') {
+    return getResult(`${this.url}/markets/${exchange}/${coin}${currency}/trades`, this.options)
   }
 
   // https://cryptowat.ch/docs/api#orderbook
-  orderbook (coin, currency = 'usd', market = 'coinbase') {
-    return getResult(`${this.url}/markets/${market}/${coin}${currency}/orderbook`, this.options)
+  orderbook (coin, currency = 'usd', exchange = 'poloniex') {
+    return getResult(`${this.url}/markets/${exchange}/${coin}${currency}/orderbook`, this.options)
   }
 
   // https://cryptowat.ch/docs/api#ohlc
-  ohlc (coin, currency = 'usd', market = 'coinbase') {
-    return getResult(`${this.url}/markets/${market}/${coin}${currency}/ohlc`, this.options)
+  ohlc (coin, currency = 'usd', exchange = 'poloniex') {
+    return getResult(`${this.url}/markets/${exchange}/${coin}${currency}/ohlc`, this.options)
   }
 
   // https://cryptowat.ch/docs/api#prices

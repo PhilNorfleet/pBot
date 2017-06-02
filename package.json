@@ -8,18 +8,22 @@
     "bootstrap": "^4.0.0-alpha.6",
     "express": "^4.15.3",
     "foreman": "^2.0.0",
+    "is-valid-redux-reducer": "^1.0.3",
     "marked": "^0.3.6",
     "mongoose": "^4.10.4",
     "nodemon": "^1.11.0",
     "react": "^15.5.4",
     "react-bootstrap-table": "^3.3.7",
     "react-dom": "^15.5.4",
-    "react-stockcharts": "^0.6.1"
+    "react-redux": "^5.0.5",
+    "react-stockcharts": "^0.6.1",
+    "redux": "^3.6.0"
   },
   "devDependencies": {
     "css-loader": "^0.28.4",
     "file-loader": "^0.11.1",
     "react-scripts": "1.0.7",
+    "redux-devtools": "^3.4.0",
     "style-loader": "^0.18.1",
     "url-loader": "^0.5.8"
   },

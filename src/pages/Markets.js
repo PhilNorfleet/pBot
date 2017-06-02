@@ -1,4 +1,6 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { selectTickerExchange } from '../actions'
 import {Grid, Row} from "react-bootstrap";
 import moment from 'moment';
 import axios from 'axios';
@@ -13,12 +15,13 @@ class Markets extends Component {
     this.state = {
       currencies: {},
       tickers: {},
+      tickerExchange: 'bitfinex',
       pair: 'BTC_ETH',
       period: 300,
       start: Math.round(new Date().getTime() / 1000) - (24 * 3600),
       end: new Date().getTime()
     };
-    console.log()
+
   }
 
   getStyle = () => {
@@ -28,8 +31,30 @@ class Markets extends Component {
     }
   }
 
+  getTickersForExchange = (tickerExchange) => {
+    let exchange_tickers = {};
+    for (var key in this.state.tickers) {
+      if (key.split(':')[0] === tickerExchange) {
+        exchange_tickers[key] = tickerExchange
+      }
+    }
+    return exchange_tickers
+  }
+
+  mapStateToProps = (state) => {
+    return {
+      tickerExchange: this.getTickersForExchange(state.tickerExchange)
+    }
+  }
+
   componentDidMount = () => {
     let { pair, period, start, end } = this.state
+    // this.props.store.subscribe(() => {
+    //   // When state will be updated(in our case, when items will be fetched), we will update local component state and force component to rerender with new data.
+    //   this.setState({
+    //     tickerExchange: this.store.getState().tickerExchange
+    //   });
+    // });
     this.loadCurrencies();
     this.loadTickers();
     this.loadPeriods(pair, period, start, end)
@@ -81,17 +106,30 @@ class Markets extends Component {
     this.loadPeriods(row.pair, period, start, end)
     this.periodsInterval = setInterval(()=>{this.loadPeriods(row.pair, period, start, end)}, 6500)
   }
+
+  onExchangeSelect = (exchange) => {
+    this.setState({tickerExchange: exchange});
+  }
+
   render = () => {
+    console.log(this.state.tickerExchange)
     let styles = this.getStyle();
+    console.log(this.state.tickers)
     return (
       <Grid >
         <Row>
-          <TickerList tickers={this.state.tickers} onRowClick={this.onRowClick}/>
+          <TickerList
+            tickers={ this.getTickersForExchange(this.state.tickerExchange) }
+            onRowClick={ this.onRowClick }
+            onExchangeSelect={ this.onExchangeSelect }/>
           {this.chartContainer()}
         </Row>
       </Grid>
     );
   }
 }
-
-export default Markets;
+const MarketsContainer = connect(
+  Markets.mapStateToProps,
+  // mapDispatchToProps
+)(Markets)
+export default MarketsContainer;

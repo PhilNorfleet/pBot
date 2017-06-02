@@ -1,21 +1,13 @@
 import React, {Component} from 'react';
-import {Col, Tabs, Tab} from "react-bootstrap";
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import {Col, Tabs, Tab, Nav, NavDropdown, MenuItem } from "react-bootstrap";
+import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import '../css/bootstrap.css';
 import '../css/react-bootstrap-table.min.css';
 import 'moment/locale/nb';
 
-class TickerList extends Component {
+const TickerList = ({tickers, onRowClick, onExchangeSelect}) => {
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      tickers: [],
-      selected: null
-    };
-  }
-
-  getStyle = () => {
+  const getStyle = () => {
     return {
       col: {
         width: '258px',
@@ -53,10 +45,10 @@ class TickerList extends Component {
     }
   }
 
-  table = (tickers) => {
-    let styles = this.getStyle();
+  const table = (tickers) => {
+    let styles = getStyle();
     const options = {
-      onRowClick: this.props.onRowClick,
+      onRowClick: onRowClick,
       defaultSortName: 'baseVolume',
       defaultSortOrder: 'desc'
     };
@@ -124,8 +116,8 @@ class TickerList extends Component {
     }
   }
 
-  tab = (key, tickers) => {
-    let styles = this.getStyle();
+  const tab = (key, tickers) => {
+    let styles = getStyle();
     return (
       <Tab
         key={ key }
@@ -133,51 +125,64 @@ class TickerList extends Component {
         title={ key }
         style={ styles.tab }
         unmountOnExit>
-        { this.table(tickers) }
+        { table(tickers) }
       </Tab>
     )
   }
 
-  tabs = (tickers) => {
-    let styles = this.getStyle();
+  const tabs = (tickers) => {
+    let styles = getStyle();
     let keys = [];
     for (var key in tickers) {
-      let asset = key.split('_')[0]
+      let asset = key.slice(key.length-3, key.length)
       if (keys.indexOf(asset) < 0){ keys.push(asset) }
     }
     let tabs =[];
     keys.forEach((key, index) => {
       let rel_tickers = [];
       for (var compare_key in tickers) {
-        if(compare_key.split('_')[0] === key) {
+        if(compare_key.slice(key.length-3, key.length) === key) {
           rel_tickers.push(tickers[compare_key])
           rel_tickers[rel_tickers.length - 1].pair = compare_key
-          rel_tickers[rel_tickers.length - 1].name = compare_key.split('_')[1]
+          rel_tickers[rel_tickers.length - 1].name = compare_key.split(':')[1].slice(0, key.length-2)
         }
       }
-      tabs.push(this.tab(key, rel_tickers))
+      tabs.push(tab(key, rel_tickers))
     })
+
+
+
     return (
-      <Tabs
-        id='markets'
-        defaultActiveKey={ 'BTC' }
-        style={ styles.tabs }>
-        { tabs }
-      </Tabs>
+      <Col>
+        <Nav>
+          <NavDropdown title="Exchange" onSelect={ handleExchangeSelect } id="nav-dropdown-within-tab">
+            <MenuItem eventKey={'bitfinex'}>Bitfinex</MenuItem>
+            <MenuItem eventKey={'poloniex'}>Poloniex</MenuItem>
+            <MenuItem eventKey={'coinbase'}>Coinbase</MenuItem>
+          </NavDropdown>
+        </Nav>
+        <Tabs
+          id='markets'
+          defaultActiveKey={ 'BTC' }
+          style={ styles.tabs }>
+          { tabs }
+        </Tabs>
+      </Col>
     )
   }
 
-
-
-  render = () => {
-    let styles = this.getStyle();
-    return (
-      <Col md={4} lg={2} sm={6} xs={12}
-        style={ styles.col }>
-        {this.tabs(this.props.tickers)}
-      </Col>
-    );
+  const handleExchangeSelect = (exchange) => {
+    onExchangeSelect(exchange)
   }
+
+  let style = getStyle();
+  return (
+    <Col md={4} lg={2} sm={6} xs={12}
+      style={ style }>
+      {tabs(tickers)}
+    </Col>
+  );
+
 }
 
 export default TickerList;

@@ -22,13 +22,6 @@ class ChartContainer extends Component {
       },
     }
   }
-  componentDidMount = () => {
-
-  }
-  componentWillUnmount = () => {
-
-  }
-
 
   render = () => {
     let styles = this.getStyle();
@@ -37,6 +30,7 @@ class ChartContainer extends Component {
     let type = 'svg'
     let width = 500
     let periods = this.props.periods;
+    console.log(periods)
     if (periods) {
       periods.forEach((d, i) => {
         d.date = new Date(periods[i].date);
