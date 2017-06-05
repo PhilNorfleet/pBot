@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Col, Tabs, Tab, Nav, NavDropdown, MenuItem } from "react-bootstrap";
 import { BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import '../css/bootstrap.css';
-import '../css/react-bootstrap-table.min.css';
+import '../../styles/css/bootstrap.css';
+import '../../styles/css/react-bootstrap-table.min.css';
 import 'moment/locale/nb';
 
 const TickerList = ({tickers, onRowClick, onExchangeSelect}) => {

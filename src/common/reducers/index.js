@@ -7,9 +7,9 @@ import tickerExchange from '../reducers/tickerExchange'
 // console.log(isValidReduxReducer(tickerExchange))
 // console.log(reducers)
 // console.log(isValidReduxReducer(reducers))
-const pbotApp = combineReducers({
+const rootReducer = combineReducers({
   tickerExchange: tickerExchange,
 })
-// console.log(pbotApp)
-// console.log(isValidReduxReducer(pbotApp))
-export default pbotApp
+// console.log(rootReducer)
+// console.log(isValidReduxReducer(rootReducer))
+export default rootReducer

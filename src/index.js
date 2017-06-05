@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-import pbotApp from './reducers'
-import MarketsContainer from './pages/Markets';
+import { Provider } from 'react-redux';
+import configureStore from './common/store/configureStore';
+import MarketsContainer from './common/containers/Markets';
 import registerServiceWorker from './registerServiceWorker';
 import { Router, Route, browserHistory } from 'react-router';
-import { selectTickerExchange } from './actions'
+import { selectTickerExchange } from './common/actions'
 import isValidReduxReducer from 'is-valid-redux-reducer'
-// console.log(pbotApp)
-// console.log(isValidReduxReducer(pbotApp))
-let store = createStore(pbotApp)
+// console.log(rootReducer)
+// console.log(isValidReduxReducer(rootReducer))
+let store = configureStore();
 // console.log(store)
 console.log(store.getState())
 let unsubscribe = store.subscribe(() =>

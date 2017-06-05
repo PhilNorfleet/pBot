@@ -55,29 +55,36 @@ class Markets extends Component {
     //     tickerExchange: this.store.getState().tickerExchange
     //   });
     // });
-    this.loadCurrencies();
-    this.loadTickers();
-    this.loadPeriods(pair, period, start, end)
-    this.tickerInterval = setInterval(()=>{this.loadTickers()}, 6500)
-    this.periodsInterval = setInterval(()=>{this.loadPeriods(pair, period, start, end)}, 6500)
+    axios.post('http://localhost:3001/getTrades', {
+      data: {
+        pair: 'BTC_USDT'
+      }
+    }).then((res) =>{
+      console.log(res)
+    })
+    // this.loadCurrencies();
+    // this.loadTickers();
+    // this.loadPeriods(pair, period, start, end)
+    // this.tickerInterval = setInterval(()=>{this.loadTickers()}, 6500)
+    // this.periodsInterval = setInterval(()=>{this.loadPeriods(pair, period, start, end)}, 6500)
   }
 
   componentWillUnmount = () => {
-    clearInterval(this.tickerInterval);
-    clearInterval(this.periodsInterval);
+    // clearInterval(this.tickerInterval);
+    // clearInterval(this.periodsInterval);
   }
 
   chartContainer = () => {
-    let { periods, pair } = this.state;
-    if (periods) {
-      return (
-        <ChartContainer periods={ periods } pair={ pair } />
-      )
-    } else {
-      return (
-        <div>Loading...</div>
-      )
-    }
+    // let { periods, pair } = this.state;
+    // if (periods) {
+    //   return (
+    //     <ChartContainer periods={ periods } pair={ pair } />
+    //   )
+    // } else {
+    //   return (
+    //     <div>Loading...</div>
+    //   )
+    // }
   }
 
   loadCurrencies = () => {
@@ -122,7 +129,7 @@ class Markets extends Component {
             tickers={ this.getTickersForExchange(this.state.tickerExchange) }
             onRowClick={ this.onRowClick }
             onExchangeSelect={ this.onExchangeSelect }/>
-          {this.chartContainer()}
+
         </Row>
       </Grid>
     );
