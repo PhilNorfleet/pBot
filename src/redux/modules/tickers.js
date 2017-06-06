@@ -1,11 +1,10 @@
-const LOAD = 'CHAT_LOAD';
-const LOAD_SUCCESS = 'CHAT_LOAD_SUCCESS';
-const LOAD_FAIL = 'CHAT_LOAD_FAIL';
-const ADD_MESSAGE = 'CHAT_ADD_MESSAGE';
+const LOAD = 'TICKERS_LOAD';
+const LOAD_SUCCESS = 'TICKERS_LOAD_SUCCESS';
+const LOAD_FAIL = 'TICKERS_LOAD_FAIL';
 
 const initialState = {
   loaded: false,
-  messages: []
+  tickers: []
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -20,7 +19,7 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         loading: false,
         loaded: true,
-        messages: action.result.data
+        tickers: action.result
       };
     case LOAD_FAIL:
       return {
@@ -29,32 +28,25 @@ export default function reducer(state = initialState, action = {}) {
         loaded: false,
         error: action.error
       };
-    case ADD_MESSAGE:
-      return {
-        ...state,
-        messages: state.messages.concat(action.message)
-      };
     default:
       return state;
   }
 }
 
 export function isLoaded(globalState) {
-  return globalState.chat && globalState.chat.loaded;
+  return globalState.tickers && globalState.tickers.loaded;
 }
 
 export function load() {
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
-    promise: ({ app }) => app.service('messages').find({
+    promise: ({ app }) => app.service('tickers').find({
+      paginate: false,
       query: {
-        $sort: { createdAt: -1 },
-        $limit: 25
+        isFrozen: 0
       }
-    }).then(page => ({ ...page, data: page.data.reverse() }))
+    }).then(page => {
+      return { ...page, data: page };
+    })
   };
-}
-
-export function addMessage(message) {
-  return { type: ADD_MESSAGE, message };
 }

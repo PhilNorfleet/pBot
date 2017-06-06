@@ -91,7 +91,9 @@ export default class App extends Component {
               {user && <LinkContainer to="/chatFeathers">
                 <NavItem>Chat with Feathers</NavItem>
               </LinkContainer>}
-
+              <LinkContainer to="/tickers">
+                <NavItem>Tickers</NavItem>
+              </LinkContainer>
               <LinkContainer to="/chat">
                 <NavItem>Chat</NavItem>
               </LinkContainer>

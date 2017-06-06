@@ -78,7 +78,13 @@ export default store => {
         )}
       />
       <Route path="chat" getComponent={() => System.import('./containers/Chat/Chat')} />
-
+      <Route
+        path="tickers"
+        getComponent={() => injectReducerAndRender(
+          { tickers: System.import('./redux/modules/tickers') },
+          System.import('./containers/Tickers/Tickers')
+        )}
+      />
       {/* Catch all route */}
       <Route path="*" component={NotFound} status={404} />
     </Route>

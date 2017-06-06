@@ -12,7 +12,7 @@ export default function userService() {
     }),
     paginate: {
       default: 5,
-      max: 25
+      max: 100
     }
   };
 

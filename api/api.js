@@ -14,7 +14,38 @@ import services from './services';
 import * as actions from './actions';
 import { mapUrl } from './utils/url.js';
 import auth, { socketAuth } from './services/authentication';
+import mongoose from 'mongoose';
+import plnx from 'plnx';
+import * as models from './models'
+const { Ticker } = models;
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://pbotdev:password@ds115071.mlab.com:15071/pbot-dev');
+plnx.push((session) => {
 
+  session.subscribe("ticker", (ticker) => {
+    // console.log('----------\n', data.forEach((item)=>{console.log(item)}))
+    const queryPair = { currencyPair: ticker[0] };
+    const tickerData = {
+        currencyPair: ticker[0],
+        last: ticker[1],
+        lowestAsk: ticker[2],
+        highestBid: ticker[3],
+        percentChange: ticker[4],
+        baseVolume: ticker[5],
+        quoteVolume: ticker[6],
+        isFrozen: ticker[7],
+        dailyHigh: ticker[8],
+        dailyLow: ticker[9]
+    }
+    Ticker.findOneAndUpdate(queryPair, tickerData, {upsert:true}, function (err, doc){
+      if (err) {
+        console.log('error saving ticker: ', err);
+      }
+      console.log('ticker saved', doc)
+    })
+      // console.log(ticker);
+  });
+});
 process.on('unhandledRejection', error => console.error(error));
 
 const pretty = new PrettyError();
@@ -27,14 +58,14 @@ app.set('config', config)
     secret: 'react and redux rule!!!!',
     resave: false,
     saveUninitialized: false,
-    cookie: { maxAge: 60000 }
+    cookie: { maxAge: 120000 }
   }))
   .use(bodyParser.urlencoded({ extended: true }))
   .use(bodyParser.json());
 
 const actionsHandler = (req, res, next) => {
-  const splittedUrlPath = req.url.split('?')[0].split('/').slice(1);
-  const { action, params } = mapUrl(actions, splittedUrlPath);
+  const separatedUrlPath = req.url.split('?')[0].split('/').slice(1);
+  const { action, params } = mapUrl(actions, separatedUrlPath);
 
   req.app = app;
 

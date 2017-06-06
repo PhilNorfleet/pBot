@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router';
-import { CounterButton, GithubButton } from 'components';
+import { CounterButton } from 'components';
 import config from 'config';
 import Helmet from 'react-helmet';
 import { connect } from 'react-redux';
@@ -46,24 +46,6 @@ export default class Home extends Component {
                 <i className="fa fa-github" /> View on Github
               </a>
             </p>
-            {online && <GithubButton
-              user="erikras"
-              repo="react-redux-universal-hot-example"
-              type="star"
-              width={160}
-              height={30}
-              count
-              large
-            />}
-            {online && <GithubButton
-              user="erikras"
-              repo="react-redux-universal-hot-example"
-              type="fork"
-              width={160}
-              height={30}
-              count
-              large
-            />}
 
             <p className={styles.humility}>
               Created and maintained by{' '}

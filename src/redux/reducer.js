@@ -6,9 +6,10 @@ import auth from './modules/auth';
 import notifs from './modules/notifs';
 import counter from './modules/counter';
 import info from './modules/info';
-// import widgets from './modules/widgets';
-// import survey from './modules/survey';
-// import chat from './modules/chat';
+import widgets from './modules/widgets';
+import survey from './modules/survey';
+import chat from './modules/chat';
+import tickers from './modules/tickers';
 
 export default function createReducers(asyncReducers) {
   return {
@@ -24,9 +25,10 @@ export default function createReducers(asyncReducers) {
       counter3: counter
     }),
     info,
-    // widgets,
-    // survey,
-    // chat,
+    widgets,
+    survey,
+    chat,
+    tickers,
     ...asyncReducers
   };
 }
