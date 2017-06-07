@@ -18,34 +18,7 @@ import mongoose from 'mongoose';
 import plnx from 'plnx';
 import * as models from './models'
 const { Ticker } = models;
-mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://pbotdev:password@ds115071.mlab.com:15071/pbot-dev');
-plnx.push((session) => {
 
-  session.subscribe("ticker", (ticker) => {
-    // console.log('----------\n', data.forEach((item)=>{console.log(item)}))
-    const queryPair = { currencyPair: ticker[0] };
-    const tickerData = {
-        currencyPair: ticker[0],
-        last: ticker[1],
-        lowestAsk: ticker[2],
-        highestBid: ticker[3],
-        percentChange: ticker[4],
-        baseVolume: ticker[5],
-        quoteVolume: ticker[6],
-        isFrozen: ticker[7],
-        dailyHigh: ticker[8],
-        dailyLow: ticker[9]
-    }
-    Ticker.findOneAndUpdate(queryPair, tickerData, {upsert:true}, function (err, doc){
-      if (err) {
-        console.log('error saving ticker: ', err);
-      }
-      console.log('ticker saved', doc)
-    })
-      // console.log(ticker);
-  });
-});
 process.on('unhandledRejection', error => console.error(error));
 
 const pretty = new PrettyError();
@@ -139,7 +112,6 @@ app.io.on('connection', socket => {
       }
     }
   });
-
   socket.on('msg', data => {
     const message = { ...data, id: messageIndex };
     messageBuffer[messageIndex % bufferSize] = message;
@@ -147,3 +119,38 @@ app.io.on('connection', socket => {
     app.io.emit('msg', message);
   });
 });
+  mongoose.Promise = global.Promise;
+  mongoose.connect('mongodb://pbotdev:password@ds115071.mlab.com:15071/pbot-dev');
+  plnx.push((session) => {
+
+    session.subscribe("ticker", (ticker) => {
+      // console.log('----------\n', data.forEach((item)=>{console.log(item)}))
+      const queryPair = { currencyPair: ticker[0] };
+      const tickerData = {
+          currencyPair: ticker[0],
+          last: ticker[1],
+          lowestAsk: ticker[2],
+          highestBid: ticker[3],
+          percentChange: ticker[4],
+          baseVolume: ticker[5],
+          quoteVolume: ticker[6],
+          isFrozen: ticker[7],
+          dailyHigh: ticker[8],
+          dailyLow: ticker[9]
+      }
+      let thisTicker = {};
+      // console.log(ticker[0])
+      app.service('tickers').find({query: queryPair}).then((result) => {
+        thisTicker = JSON.stringify(result[0]);
+        if (!result.length){
+          app.service('tickers').create(tickerData).then(console.log('created: ' + tickerData['currencyPair']))
+        }
+        else {
+          app.service('tickers').patch(null, tickerData, {query: queryPair}).then((result) => {
+            console.log(result)
+            console.log('updated: ' + tickerData['currencyPair'])
+          })
+        }
+      })
+    });
+  });

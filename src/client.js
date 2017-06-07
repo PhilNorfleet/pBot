@@ -48,7 +48,7 @@ Promise.all([window.__data ? true : isOnline(), getStoredState(offlinePersistCon
     if (online) socket.open();
 
     // if your server doesn't authenticate socket connexion by cookie
-    // if (online) app.authenticate().catch(() => null);
+    if (online) app.authenticate().catch(() => null);
 
     const data = !online ? { ...storedData, ...window.__data, online } : { ...window.__data, online };
     const store = createStore(browserHistory, { client, app, restApp }, data, offlinePersistConfig);

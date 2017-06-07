@@ -18,7 +18,7 @@ const configureApp = transport => feathers()
   .configure(hooks())
   .configure(authentication({ storage }));
 
-export const socket = io('', { path: host('/ws'), autoConnect: false });
+export const socket = io('', { path: host('/ws'), autoConnect: true });
 
 export function createApp(req) {
   if (req === 'rest') {

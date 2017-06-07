@@ -27,7 +27,8 @@ export default class Tickers extends Component {
   static propTypes = {
     app: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    tickers: PropTypes.object.isRequired
+    tickers: PropTypes.object.isRequired,
+    load: PropTypes.func.isRequired
   };
 
   state = {
@@ -36,22 +37,26 @@ export default class Tickers extends Component {
   };
 
   componentDidMount() {
-    this.props.app.service('tickers').on('updated');
+
+    this.props.app.service('tickers').on('patched', this.props.load);
+    this.props.app.service('tickers').on('patched', console.log('patched'));
+    this.props.app.service('tickers').on('created', console.log('created'));
   }
 
-  // componentWillUnmount() {
-  //   this.props.app.service('tickers').removeListener('created', this.props.addMessage);
-  // }
+  componentWillUnmount() {
+    this.props.app.service('tickers').removeListener('patched', console.log('removeListener'));
+  }
 
 
   render() {
-    const { user, tickers} = this.props;
-    console.log(tickers.tickers);
+    const { user, tickers } = this.props;
+    // console.log(tickers.tickers);
     // const { error } = this.state;
+
     const displayTickers = [];
-    Object.keys(tickers.tickers).forEach((key) =>{
-      displayTickers.push(tickers.tickers[key].last)
-    })
+    Object.keys(tickers.tickers).forEach((key) => {
+      displayTickers.push(tickers.tickers[key].last);
+    });
     return (
       <div className="container">
         <h1>Tickers</h1>
