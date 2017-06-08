@@ -2,7 +2,9 @@ import mongoose from 'mongoose';
 const Schema = mongoose.Schema;
 
 const tickerSchema = new Schema({
-  currencyPair: String,
+  exchange: String,
+  asset: String,
+  coin: String,
   last: Number,
   lowestAsk: Number,
   highestBid: Number,
