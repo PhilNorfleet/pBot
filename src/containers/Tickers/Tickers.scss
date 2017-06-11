@@ -1,0 +1,24 @@
+.tickers {
+  .tabs {
+    max-width: 260px;
+  }
+  .tab {
+    max-height: 500px;
+    overflow-y: scroll;
+  }
+  .table {
+    text-align: center;
+    font-size: 10px;
+    .header {
+      .head {
+        font-size: 11px;
+        text-align: center;
+      }
+    }
+
+    .row {
+      padding: 2px auto;
+    }
+  }
+
+}

@@ -6,9 +6,9 @@ import { pure } from 'recompose';
 import { withApp } from 'app';
 import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
-import { BootstrapTable, TableHeaderColumn } from 'react-bootstrap-table';
+import TickersTable from './TickersTable'
+import TickersTab from './TickersTab'
 import * as tickersActions from 'redux/modules/tickers';
-import '../../components/Table/Table.scss';
 @asyncConnect([{
   promise: ({ store: { dispatch, getState } }) => {
     const state = getState();
@@ -21,36 +21,32 @@ import '../../components/Table/Table.scss';
 @connect(
   state => ({
     user: state.auth.user,
-    tickers: state.tickers
+    tickers: state.tickers.tickers,
+    assetTab: state.tickers.assetTab
   }),
   { ...tickersActions }
 )
 @withApp
 @pure
 export default class Tickers extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
 
   static propTypes = {
     app: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    tickers: PropTypes.object.isRequired,
-    load: PropTypes.func.isRequired
+    tickers: PropTypes.array.isRequired,
+    load: PropTypes.func.isRequired,
+    selectAsset: PropTypes.func.isRequired,
+    assetTab: PropTypes.string.isRequired
   };
 
   state = {
     tickers: '',
-    error: null
+    error: null,
   };
 
   componentDidMount = () => {
     this.props.app.service('tickers').on('patched', this.props.load);
-    const tickers = Object.keys(this.props.tickers.tickers.data).map(key => {
-      return this.props.tickers.tickers.data[key];
-    });
-    const assets = [...new Set(tickers.map(ticker => ticker.asset))];
+    const assets = [...new Set(this.props.tickers.map(ticker => ticker.asset))];
     this.setState({assets: assets})
   }
 
@@ -58,55 +54,41 @@ export default class Tickers extends Component {
     this.props.app.service('tickers').removeListener('patched', this.props.load);
   }
 
-  tickerTable = (tickersForAsset) => {
-    const data = tickersForAsset.map((ticker) => {
-      const tickerData = {
-        coin: ticker.coin,
-        last: ticker.last,
-        percentChange: ticker.percentChange,
-        baseVolume: ticker.baseVolume
-      };
-      return tickerData;
-    });
-    return (
-      <BootstrapTable data={data} striped hover>
-        <TableHeaderColumn dataField="coin" isKey dataAlign="center" dataSort>Coin</TableHeaderColumn>
-        <TableHeaderColumn dataField="last" dataAlign="center" dataSort>Price</TableHeaderColumn>
-        <TableHeaderColumn dataField="baseVolume" dataAlign="center" dataSort>Volume</TableHeaderColumn>
-        <TableHeaderColumn dataField="percentChange" dataAlign="center" dataSort>24h±%</TableHeaderColumn>
-      </BootstrapTable>
-    );
-  }
-
-  tab = (asset, tickers) => {
-    console.log('tab')
-    const tickersForAsset = tickers.filter(ticker => {
-      return ticker.asset === asset
-    });
-    return (<Tab key={asset} title={asset} eventKey={asset}> { this.tickerTable(tickersForAsset) } </Tab>)
-  }
-
-  tabs = (tickers) => {
-    console.log('tabs')
-    const tabs = this.state.assets.map(asset => {
-      return this.tab(asset, tickers);
+  tabs = () => {
+    const style = require('./Tickers.scss');
+    const tabs = this.state.assets.map((asset, index) => {
+      const table = ( <TickersTable
+            className='table'
+            tickers={this.props.tickers}
+            asset={asset}
+            selectedAsset={this.props.assetTab}/>);
+      return (
+        <Tab
+          className={`${style.tab}`}
+          title={asset}
+          key={asset}
+          eventKey={asset}>
+          {asset === this.props.assetTab && table}
+        </Tab>
+      )
     });
     return tabs;
   }
 
   render = () => {
-    // console.log('rendering')
-    const { user, tickers } = this.props;
-    const displayTickers = Object.keys(tickers.tickers.data).map(key => {
-      return tickers.tickers.data[key];
-    });
+    const style = require('./Tickers.scss');
+    const { user, tickers, assetTab, selectAsset } = this.props;
     return (
-      <div className="container">
+      <div className={`${style.tickers} container`}>
         <h1>Tickers</h1>
-
-        {(user && this.state.assets) && <Tabs id='tickerTableTabs' defaultActiveKey='BTC'>
-          { this.tabs(displayTickers) }
-        </Tabs>
+        {(user && this.state.assets) &&
+          <Tabs
+            className={`${style.tabs}`}
+            onSelect={selectAsset}
+            id='tickerTableTabs'
+            defaultActiveKey={'BTC'}>
+            { this.tabs(tickers) }
+          </Tabs>
         }
       </div>
     );

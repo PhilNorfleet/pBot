@@ -121,7 +121,7 @@ app.io.on('connection', socket => {
 });
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://pbotdev:password@ds115071.mlab.com:15071/pbot-dev').then((connection) => {
-
+console.log(process.memoryUsage())
 plnx.push((session) => {
   console.log('subscribing to tickers')
   session.subscribe("ticker", (ticker) => {
@@ -151,10 +151,14 @@ plnx.push((session) => {
         app.service('tickers').create(tickerData);
       }
       else if (tickerExists === 1) {
-        app.service('tickers').patch(result[0]._id, tickerData);
+        const changedKeys = Object.keys(result[0]).filter((key, index) => {
+          return !(result[0][key] === tickerData[key])
+        })
+        if (changedKeys.length > 0) {
+          app.service('tickers').patch(result[0]._id, tickerData);
+        }
       }
       else {
-        console.log(result[0])
         app.service('tickers').remove(result[0]._id)
       }
     })

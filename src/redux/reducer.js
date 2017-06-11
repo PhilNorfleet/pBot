@@ -10,7 +10,6 @@ import widgets from './modules/widgets';
 import survey from './modules/survey';
 import chat from './modules/chat';
 import tickers from './modules/tickers';
-
 export default function createReducers(asyncReducers) {
   return {
     routing: routerReducer,
