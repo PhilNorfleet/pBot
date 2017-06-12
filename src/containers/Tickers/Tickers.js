@@ -7,7 +7,6 @@ import { withApp } from 'app';
 import Tabs from 'react-bootstrap/lib/Tabs';
 import Tab from 'react-bootstrap/lib/Tab';
 import TickersTable from './TickersTable'
-import TickersTab from './TickersTab'
 import * as tickersActions from 'redux/modules/tickers';
 @asyncConnect([{
   promise: ({ store: { dispatch, getState } }) => {
@@ -22,7 +21,8 @@ import * as tickersActions from 'redux/modules/tickers';
   state => ({
     user: state.auth.user,
     tickers: state.tickers.tickers,
-    assetTab: state.tickers.assetTab
+    assetTab: state.tickers.assetTab,
+    coinRow: state.tickers.coinRow
   }),
   { ...tickersActions }
 )
@@ -36,7 +36,9 @@ export default class Tickers extends Component {
     tickers: PropTypes.array.isRequired,
     load: PropTypes.func.isRequired,
     selectAsset: PropTypes.func.isRequired,
-    assetTab: PropTypes.string.isRequired
+    assetTab: PropTypes.string.isRequired,
+    selectCoin: PropTypes.func.isRequired,
+    coinRow: PropTypes.string.isRequired
   };
 
   state = {
@@ -61,7 +63,9 @@ export default class Tickers extends Component {
             className='table'
             tickers={this.props.tickers}
             asset={asset}
-            selectedAsset={this.props.assetTab}/>);
+            selectedAsset={this.props.assetTab}
+            selectedRow={this.props.coinRow}
+            selectCoin={this.props.selectCoin}/>);
       return (
         <Tab
           className={`${style.tab}`}
@@ -80,7 +84,6 @@ export default class Tickers extends Component {
     const { user, tickers, assetTab, selectAsset } = this.props;
     return (
       <div className={`${style.tickers} container`}>
-        <h1>Tickers</h1>
         {(user && this.state.assets) &&
           <Tabs
             className={`${style.tabs}`}

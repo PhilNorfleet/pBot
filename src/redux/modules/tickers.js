@@ -2,11 +2,13 @@ const LOAD = 'TICKERS_LOAD';
 const LOAD_SUCCESS = 'TICKERS_LOAD_SUCCESS';
 const LOAD_FAIL = 'TICKERS_LOAD_FAIL';
 const SELECT_ASSET = 'SELECT_ASSET';
+const SELECT_COIN = 'SELECT_COIN';
 
 const initialState = {
   loaded: false,
   tickers: [],
-  assetTab: 'BTC'
+  assetTab: 'BTC',
+  coinRow: 'ETH'
 };
 
 export default function reducer(state = initialState, action = {}) {
@@ -31,11 +33,17 @@ export default function reducer(state = initialState, action = {}) {
         loaded: false,
         error: action.error
       };
-      }
+    }
     case SELECT_ASSET: {
       return {
         ...state,
         assetTab: action.asset
+      };
+    }
+    case SELECT_COIN: {
+      return {
+        ...state,
+        coinRow: action.coin
       };
     }
     default:
@@ -51,15 +59,19 @@ export function selectAsset(asset) {
   return { type: SELECT_ASSET, asset };
 }
 
+export function selectCoin(coin) {
+  return { type: SELECT_COIN, coin };
+}
+
 const defaultLoadParams = {
   paginate: false,
   query: {
     isFrozen: 0
   }
-}
+};
 
 export function load(newParams = {}) {
-  const params = Object.assign({}, defaultLoadParams, newParams)
+  const params = Object.assign({}, defaultLoadParams, newParams);
   return {
     types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
     promise: ({ app }) => app.service('tickers').find(params).then(data => {

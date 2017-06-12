@@ -98,30 +98,17 @@ const messageBuffer = new Array(bufferSize);
 let messageIndex = 0;
 
 app.io.use(socketAuth(app));
-
+// non-feathers socket-io connection.
 app.io.on('connection', socket => {
   const user = socket.feathers.user ? { ...socket.feathers.user, password: undefined } : undefined;
   socket.emit('news', { msg: '\'Hello World!\' from server', user });
-
-  socket.on('history', () => {
-    for (let index = 0; index < bufferSize; index++) {
-      const msgNo = (messageIndex + index) % bufferSize;
-      const msg = messageBuffer[msgNo];
-      if (msg) {
-        socket.emit('msg', msg);
-      }
-    }
-  });
-  socket.on('msg', data => {
-    const message = { ...data, id: messageIndex };
-    messageBuffer[messageIndex % bufferSize] = message;
-    messageIndex++;
-    app.io.emit('msg', message);
-  });
 });
+
+//connect to mLab storage
 mongoose.Promise = global.Promise;
 mongoose.connect('mongodb://pbotdev:password@ds115071.mlab.com:15071/pbot-dev').then((connection) => {
-console.log(process.memoryUsage())
+
+// poloniex api
 plnx.push((session) => {
   console.log('subscribing to tickers')
   session.subscribe("ticker", (ticker) => {

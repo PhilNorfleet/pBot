@@ -15,9 +15,23 @@
         text-align: center;
       }
     }
-
+    .selectedRow {
+      background: #7BB2EB;
+    }
     .row {
       padding: 2px auto;
+    }
+    .coin {
+      text-align: left;
+    }
+    .price {
+      text-align: right;
+    }
+    .volume {
+      text-align: left;
+    }
+    .percent {
+      text-align: right;
     }
   }
 
