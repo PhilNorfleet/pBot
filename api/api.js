@@ -98,59 +98,59 @@ const messageBuffer = new Array(bufferSize);
 let messageIndex = 0;
 
 app.io.use(socketAuth(app));
-
+// non-feathers socket-io connection.
 app.io.on('connection', socket => {
   const user = socket.feathers.user ? { ...socket.feathers.user, password: undefined } : undefined;
   socket.emit('news', { msg: '\'Hello World!\' from server', user });
+});
 
-  socket.on('history', () => {
-    for (let index = 0; index < bufferSize; index++) {
-      const msgNo = (messageIndex + index) % bufferSize;
-      const msg = messageBuffer[msgNo];
-      if (msg) {
-        socket.emit('msg', msg);
-      }
+//connect to mLab storage
+mongoose.Promise = global.Promise;
+mongoose.connect('mongodb://pbotdev:password@ds115071.mlab.com:15071/pbot-dev').then((connection) => {
+
+// poloniex api
+plnx.push((session) => {
+  console.log('subscribing to tickers')
+  session.subscribe("ticker", (ticker) => {
+    const splitCurrencyPair = ticker[0].split('_')
+    const tickerData = {
+        exchange: 'poloniex',
+        asset: splitCurrencyPair[0],
+        coin: splitCurrencyPair[1],
+        last: ticker[1],
+        lowestAsk: ticker[2],
+        highestBid: ticker[3],
+        percentChange: ticker[4],
+        baseVolume: ticker[5],
+        quoteVolume: ticker[6],
+        isFrozen: ticker[7],
+        dailyHigh: ticker[8],
+        dailyLow: ticker[9]
     }
-  });
-  socket.on('msg', data => {
-    const message = { ...data, id: messageIndex };
-    messageBuffer[messageIndex % bufferSize] = message;
-    messageIndex++;
-    app.io.emit('msg', message);
+    const query = {
+      exchange: 'poloniex',
+      asset: splitCurrencyPair[0],
+      coin: splitCurrencyPair[1]
+    };
+    app.service('tickers').find({query: query}).then((result) => {
+      const tickerExists = result.length ? result.length : 0
+      if (tickerExists === 0) {
+        app.service('tickers').create(tickerData);
+      }
+      else if (tickerExists === 1) {
+        const changedKeys = Object.keys(result[0]).filter((key, index) => {
+          return !(result[0][key] === tickerData[key])
+        })
+        if (changedKeys.length > 0) {
+          app.service('tickers').patch(result[0]._id, tickerData);
+        }
+      }
+      else {
+        app.service('tickers').remove(result[0]._id)
+      }
+    })
   });
 });
-  mongoose.Promise = global.Promise;
-  mongoose.connect('mongodb://pbotdev:password@ds115071.mlab.com:15071/pbot-dev');
-  plnx.push((session) => {
 
-    session.subscribe("ticker", (ticker) => {
-      // console.log('----------\n', data.forEach((item)=>{console.log(item)}))
-      const queryPair = { currencyPair: ticker[0] };
-      const tickerData = {
-          currencyPair: ticker[0],
-          last: ticker[1],
-          lowestAsk: ticker[2],
-          highestBid: ticker[3],
-          percentChange: ticker[4],
-          baseVolume: ticker[5],
-          quoteVolume: ticker[6],
-          isFrozen: ticker[7],
-          dailyHigh: ticker[8],
-          dailyLow: ticker[9]
-      }
-      let thisTicker = {};
-      // console.log(ticker[0])
-      app.service('tickers').find({query: queryPair}).then((result) => {
-        thisTicker = JSON.stringify(result[0]);
-        if (!result.length){
-          app.service('tickers').create(tickerData).then(console.log('created: ' + tickerData['currencyPair']))
-        }
-        else {
-          app.service('tickers').patch(null, tickerData, {query: queryPair}).then((result) => {
-            console.log(result)
-            console.log('updated: ' + tickerData['currencyPair'])
-          })
-        }
-      })
-    });
-  });
+})
+

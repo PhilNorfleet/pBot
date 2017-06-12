@@ -1,7 +1,7 @@
 {
-  "name": "react-redux-universal-hot-example",
-  "description": "Example of an isomorphic (universal) webapp using react redux and hot reloading",
-  "repository": "https://github.com/erikras/react-redux-universal-hot-example",
+  "name": "pBot",
+  "description": "Build a crypto-trading bot during your lunch break",
+  "repository": "https://github.com/PhilNorfleet/pBot",
   "logo": "http://node-js-sample.herokuapp.com/node.svg",
   "keywords": [
     "react",

@@ -34,10 +34,6 @@ function initSocket() {
     console.log(data);
     socket.emit('my other event', { my: 'data from client' });
   });
-  socket.on('msg', data => {
-    console.log(data);
-  });
-
   return socket;
 }
 
@@ -47,8 +43,8 @@ Promise.all([window.__data ? true : isOnline(), getStoredState(offlinePersistCon
   .then(([online, storedData]) => {
     if (online) socket.open();
 
-    // if your server doesn't authenticate socket connexion by cookie
-    if (online) app.authenticate().catch(() => null);
+    // // if your server doesn't authenticate socket connexion by cookie
+    // if (online) app.authenticate().catch(() => null);
 
     const data = !online ? { ...storedData, ...window.__data, online } : { ...window.__data, online };
     const store = createStore(browserHistory, { client, app, restApp }, data, offlinePersistConfig);

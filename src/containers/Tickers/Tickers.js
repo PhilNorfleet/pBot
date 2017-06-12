@@ -2,9 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { asyncConnect } from 'redux-connect';
 import { connect } from 'react-redux';
+import { pure } from 'recompose';
 import { withApp } from 'app';
+import Tabs from 'react-bootstrap/lib/Tabs';
+import Tab from 'react-bootstrap/lib/Tab';
+import TickersTable from './TickersTable'
 import * as tickersActions from 'redux/modules/tickers';
-
 @asyncConnect([{
   promise: ({ store: { dispatch, getState } }) => {
     const state = getState();
@@ -17,55 +20,78 @@ import * as tickersActions from 'redux/modules/tickers';
 @connect(
   state => ({
     user: state.auth.user,
-    tickers: state.tickers
+    tickers: state.tickers.tickers,
+    assetTab: state.tickers.assetTab,
+    coinRow: state.tickers.coinRow
   }),
   { ...tickersActions }
 )
 @withApp
+@pure
 export default class Tickers extends Component {
 
   static propTypes = {
     app: PropTypes.object.isRequired,
     user: PropTypes.object.isRequired,
-    tickers: PropTypes.object.isRequired,
-    load: PropTypes.func.isRequired
+    tickers: PropTypes.array.isRequired,
+    load: PropTypes.func.isRequired,
+    selectAsset: PropTypes.func.isRequired,
+    assetTab: PropTypes.string.isRequired,
+    selectCoin: PropTypes.func.isRequired,
+    coinRow: PropTypes.string.isRequired
   };
 
   state = {
     tickers: '',
-    error: null
+    error: null,
   };
 
-  componentDidMount() {
-
+  componentDidMount = () => {
     this.props.app.service('tickers').on('patched', this.props.load);
-    this.props.app.service('tickers').on('patched', console.log('patched'));
-    this.props.app.service('tickers').on('created', console.log('created'));
+    const assets = [...new Set(this.props.tickers.map(ticker => ticker.asset))];
+    this.setState({assets: assets})
   }
 
-  componentWillUnmount() {
-    this.props.app.service('tickers').removeListener('patched', console.log('removeListener'));
+  componentWillUnmount = () => {
+    this.props.app.service('tickers').removeListener('patched', this.props.load);
   }
 
-
-  render() {
-    const { user, tickers } = this.props;
-    // console.log(tickers.tickers);
-    // const { error } = this.state;
-
-    const displayTickers = [];
-    Object.keys(tickers.tickers).forEach((key) => {
-      displayTickers.push(tickers.tickers[key].last);
+  tabs = () => {
+    const style = require('./Tickers.scss');
+    const tabs = this.state.assets.map((asset, index) => {
+      const table = ( <TickersTable
+            className='table'
+            tickers={this.props.tickers}
+            asset={asset}
+            selectedAsset={this.props.assetTab}
+            selectedRow={this.props.coinRow}
+            selectCoin={this.props.selectCoin}/>);
+      return (
+        <Tab
+          className={`${style.tab}`}
+          title={asset}
+          key={asset}
+          eventKey={asset}>
+          {asset === this.props.assetTab && table}
+        </Tab>
+      )
     });
-    return (
-      <div className="container">
-        <h1>Tickers</h1>
+    return tabs;
+  }
 
-        {user && <div>
-          <ul>
-            {displayTickers}
-          </ul>
-        </div>
+  render = () => {
+    const style = require('./Tickers.scss');
+    const { user, tickers, assetTab, selectAsset } = this.props;
+    return (
+      <div className={`${style.tickers} container`}>
+        {(user && this.state.assets) &&
+          <Tabs
+            className={`${style.tabs}`}
+            onSelect={selectAsset}
+            id='tickerTableTabs'
+            defaultActiveKey={'BTC'}>
+            { this.tabs(tickers) }
+          </Tabs>
         }
       </div>
     );

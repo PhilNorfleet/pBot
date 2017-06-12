@@ -1,9 +1,10 @@
 import { createStore as _createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
+
+import throttleActions from "redux-throttle-actions";
 import { createPersistor } from 'redux-persist';
 import createMiddleware from './middleware/clientMiddleware';
 import createReducers from './reducer';
-
 export function inject(store, name, asyncReducer) {
   if (store.asyncReducers[name]) return;
   store.asyncReducers[name] = asyncReducer;
@@ -19,7 +20,11 @@ function getMissingReducers(reducers, data) {
 }
 
 export default function createStore(history, { client, app, restApp }, data, persistConfig = null) {
-  const middleware = [createMiddleware({ client, app, restApp }), routerMiddleware(history)];
+  const middleware = [
+    createMiddleware({ client, app, restApp }),
+    routerMiddleware(history),
+    throttleActions(['TICKERS_LOAD_SUCCESS'], 200), // cascading rerenders prevented?
+  ];
 
   let enhancers = [applyMiddleware(...middleware)];
   if (__CLIENT__ && __DEVTOOLS__) {

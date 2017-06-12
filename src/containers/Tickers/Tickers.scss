@@ -1,0 +1,38 @@
+.tickers {
+  .tabs {
+    max-width: 260px;
+  }
+  .tab {
+    max-height: 500px;
+    overflow-y: scroll;
+  }
+  .table {
+    text-align: center;
+    font-size: 10px;
+    .header {
+      .head {
+        font-size: 11px;
+        text-align: center;
+      }
+    }
+    .selectedRow {
+      background: #7BB2EB;
+    }
+    .row {
+      padding: 2px auto;
+    }
+    .coin {
+      text-align: left;
+    }
+    .price {
+      text-align: right;
+    }
+    .volume {
+      text-align: left;
+    }
+    .percent {
+      text-align: right;
+    }
+  }
+
+}

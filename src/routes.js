@@ -31,9 +31,6 @@ export default store => {
     allowRedirectBack: false
   });
 
-  /**
-   * Please keep routes in alphabetical order
-   */
   return (
     <Route path="/" component={App}>
       {/* Home (main) route */}
@@ -46,13 +43,6 @@ export default store => {
       */}
       <Route {...permissionsComponent(isAuthenticated)()}>
         <Route path="loginSuccess" getComponent={() => System.import('./containers/LoginSuccess/LoginSuccess')} />
-        <Route
-          path="chatFeathers"
-          getComponent={() => injectReducerAndRender(
-            { chat: System.import('./redux/modules/chat') },
-            System.import('./containers/ChatFeathers/ChatFeathers')
-          )}
-        />
       </Route>
 
       {/* Routes disallow login */}
@@ -63,21 +53,6 @@ export default store => {
       {/* Routes */}
       <Route path="login" getComponent={() => System.import('./containers/Login/Login')} />
       <Route path="about" getComponent={() => System.import('./containers/About/About')} />
-      <Route
-        path="survey"
-        getComponent={() => injectReducerAndRender(
-          { survey: System.import('./redux/modules/survey') },
-          System.import('./containers/Survey/Survey')
-        )}
-      />
-      <Route
-        path="widgets"
-        getComponent={() => injectReducerAndRender(
-          { widgets: System.import('./redux/modules/widgets') },
-          System.import('./containers/Widgets/Widgets')
-        )}
-      />
-      <Route path="chat" getComponent={() => System.import('./containers/Chat/Chat')} />
       <Route
         path="tickers"
         getComponent={() => injectReducerAndRender(
