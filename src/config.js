@@ -18,7 +18,7 @@ module.exports = Object.assign({
     title: 'pBot',
     description: 'Build a crypto-trading bot during your lunch break.',
     head: {
-      titleTemplate: 'React Redux Example: %s',
+      titleTemplate: 'pBot: %s',
       meta: [
         { name: 'description', content: 'Build a crypto-trading bot during your lunch break' },
         { charset: 'utf-8' },
