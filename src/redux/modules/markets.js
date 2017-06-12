@@ -1,11 +1,11 @@
-const LOAD = 'TICKERS_LOAD';
-const LOAD_SUCCESS = 'TICKERS_LOAD_SUCCESS';
-const LOAD_FAIL = 'TICKERS_LOAD_FAIL';
+const TICKERS_LOAD = 'TICKERS_LOAD';
+const TICKERS_LOAD_SUCCESS = 'TICKERS_LOAD_SUCCESS';
+const TICKERS_LOAD_FAIL = 'TICKERS_LOAD_FAIL';
 const SELECT_ASSET = 'SELECT_ASSET';
 const SELECT_COIN = 'SELECT_COIN';
 
 const initialState = {
-  loaded: false,
+  tickerLoaded: false,
   tickers: [],
   assetTab: 'BTC',
   coinRow: 'ETH'
@@ -13,24 +13,24 @@ const initialState = {
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case LOAD:
+    case TICKERS_LOAD:
       return {
         ...state,
-        loading: true
+        tickerLoading: true
       };
-    case LOAD_SUCCESS: {
+    case TICKERS_LOAD_SUCCESS: {
       return {
         ...state,
-        loading: false,
-        loaded: true,
+        tickerLoading: false,
+        tickerLoaded: true,
         tickers: action.result
       };
     }
-    case LOAD_FAIL: {
+    case TICKERS_LOAD_FAIL: {
       return {
         ...state,
-        loading: false,
-        loaded: false,
+        tickerLoading: false,
+        tickerLoaded: false,
         error: action.error
       };
     }
@@ -52,7 +52,7 @@ export default function reducer(state = initialState, action = {}) {
 }
 
 export function isLoaded(globalState) {
-  return globalState.tickers && globalState.tickers.loaded;
+  return globalState.tickers && globalState.tickers.tickerLoaded;
 }
 
 export function selectAsset(asset) {
@@ -70,10 +70,10 @@ const defaultLoadParams = {
   }
 };
 
-export function load(newParams = {}) {
+export function tickerLoad(newParams = {}) {
   const params = Object.assign({}, defaultLoadParams, newParams);
   return {
-    types: [LOAD, LOAD_SUCCESS, LOAD_FAIL],
+    types: [TICKERS_LOAD, TICKERS_LOAD_SUCCESS, TICKERS_LOAD_FAIL],
     promise: ({ app }) => app.service('tickers').find(params).then(data => {
       const tickers = Object.values(data);
       return tickers;

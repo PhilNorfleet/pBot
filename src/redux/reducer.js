@@ -4,7 +4,7 @@ import { reducer as form } from 'redux-form';
 import auth from './modules/auth';
 import notifs from './modules/notifs';
 import info from './modules/info';
-import tickers from './modules/tickers';
+import markets from './modules/markets';
 export default function createReducers(asyncReducers) {
   return {
     routing: routerReducer,
@@ -14,7 +14,7 @@ export default function createReducers(asyncReducers) {
     notifs,
     auth,
     info,
-    tickers,
+    markets,
     ...asyncReducers
   };
 }

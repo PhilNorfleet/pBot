@@ -54,10 +54,10 @@ export default store => {
       <Route path="login" getComponent={() => System.import('./containers/Login/Login')} />
       <Route path="about" getComponent={() => System.import('./containers/About/About')} />
       <Route
-        path="tickers"
+        path="markets"
         getComponent={() => injectReducerAndRender(
-          { tickers: System.import('./redux/modules/tickers') },
-          System.import('./containers/Tickers/Tickers')
+          { markets: System.import('./redux/modules/markets') },
+          System.import('./containers/Markets/Markets')
         )}
       />
       {/* Catch all route */}

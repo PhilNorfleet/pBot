@@ -88,8 +88,8 @@ export default class App extends Component {
 
           <Navbar.Collapse>
             <Nav navbar>
-              <LinkContainer to="/tickers">
-                <NavItem>Tickers</NavItem>
+              <LinkContainer to="/markets">
+                <NavItem>Markets</NavItem>
               </LinkContainer>
               <LinkContainer to="/about">
                 <NavItem>About Us</NavItem>

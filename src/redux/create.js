@@ -1,7 +1,7 @@
 import { createStore as _createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
-
-import throttleActions from "redux-throttle-actions";
+import { composeWithDevTools } from 'redux-devtools-extension';
+import throttleActions from 'redux-throttle-actions';
 import { createPersistor } from 'redux-persist';
 import createMiddleware from './middleware/clientMiddleware';
 import createReducers from './reducer';
@@ -23,10 +23,11 @@ export default function createStore(history, { client, app, restApp }, data, per
   const middleware = [
     createMiddleware({ client, app, restApp }),
     routerMiddleware(history),
-    throttleActions(['TICKERS_LOAD_SUCCESS'], 200), // cascading rerenders prevented?
+    throttleActions(['TICKERS_LOAD_SUCCESS'], 500),
+    throttleActions(['TICKERS_LOAD'], 200) // cascading rerenders prevented?
   ];
 
-  let enhancers = [applyMiddleware(...middleware)];
+  let enhancers = [composeWithDevTools(applyMiddleware(...middleware))];
   if (__CLIENT__ && __DEVTOOLS__) {
     const { persistState } = require('redux-devtools');
     const DevTools = require('../containers/DevTools/DevTools');
